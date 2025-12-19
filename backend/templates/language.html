@@ -1,0 +1,424 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Choose Your Language</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --primary-color: #4dabaa;
+      --secondary-color: #f8f9fa;
+      --accent-color: #5bbad5;
+      --text-color: #3a4859;
+      --light-text: #6c757d;
+      --border-color: #ecf0f5;
+      --shadow-color: rgba(149, 157, 165, 0.1);
+      --gradient-start: #50b8b4;
+      --gradient-end: #62bdd9;
+      --button-color: #62bdd9;
+    }
+    
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+    
+    body {
+      font-family: 'Inter', Arial, sans-serif;
+      background: #ebf5fa;
+      color: var(--text-color);
+      line-height: 1.6;
+      min-height: 100vh;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      padding: 1rem;
+    }
+    
+    .container {
+      width: 100%;
+      max-width: 400px;
+      background-color: white;
+      border-radius: 16px;
+      box-shadow: 0 2px 15px var(--shadow-color);
+      overflow: hidden;
+      transition: transform 0.3s ease;
+      animation: fadeIn 0.5s ease-out;
+    }
+    
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(20px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+    
+    @keyframes fadeOut {
+      from { opacity: 1; transform: translateY(0); }
+      to { opacity: 0; transform: translateY(-20px); }
+    }
+    
+    .header {
+      background: linear-gradient(to right, var(--gradient-start), var(--gradient-end));
+      color: white;
+      padding: 1.2rem;
+      text-align: center;
+      font-weight: 600;
+      box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
+    }
+    
+    .header h1 {
+      margin: 0;
+      font-size: 1.3rem;
+      font-weight: 500;
+    }
+    
+    form {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+    }
+    
+    .language-list {
+      width: 100%;
+      max-height: 400px;
+      overflow-y: auto;
+    }
+    
+    .language-option {
+      padding: 0.8rem 1.2rem;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      transition: background-color 0.2s ease;
+      border-bottom: 1px solid var(--border-color);
+    }
+    
+    .language-flag {
+      width: 36px;
+      height: 36px;
+      border-radius: 50%;
+      margin-right: 1rem;
+      background-color: #f2f2f2;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+    
+    .country-code {
+      font-size: 0.85rem;
+      font-weight: 500;
+      color: #555;
+    }
+    
+    .language-name {
+      font-weight: 500;
+      font-size: 0.95rem;
+      color: #333;
+    }
+    
+    .language-code {
+      margin-left: auto;
+      font-size: 0.8rem;
+      color: var(--light-text);
+    }
+    
+    .language-option:hover {
+      background-color: #f8fbfd;
+    }
+    
+    .language-option.selected {
+      background-color: #f0f7fb;
+    }
+    
+    .footer {
+      background-color: white;
+      padding: 1.2rem;
+      text-align: center;
+    }
+    
+    button {
+      background-color: var(--button-color);
+      color: white;
+      border: none;
+      padding: 0.7rem 2rem;
+      font-size: 0.95rem;
+      font-weight: 500;
+      border-radius: 25px;
+      cursor: pointer;
+      transition: all 0.2s ease;
+      box-shadow: 0 2px 8px rgba(98, 189, 217, 0.25);
+    }
+    
+    button:hover {
+      background-color: #58b0ca;
+    }
+    
+    button:active {
+      transform: translateY(1px);
+    }
+    
+    button:disabled {
+      opacity: 0.7;
+      cursor: not-allowed;
+    }
+    
+    input[type="hidden"] {
+      display: none;
+    }
+    
+    /* Scrollbar styling */
+    .language-list::-webkit-scrollbar {
+      width: 8px;
+    }
+    
+    .language-list::-webkit-scrollbar-track {
+      background: transparent;
+    }
+    
+    .language-list::-webkit-scrollbar-thumb {
+      background-color: #ddd;
+      border-radius: 10px;
+    }
+    
+    /* ARIA support */
+    .sr-only {
+      position: absolute;
+      width: 1px;
+      height: 1px;
+      padding: 0;
+      margin: -1px;
+      overflow: hidden;
+      clip: rect(0, 0, 0, 0);
+      border: 0;
+    }
+    
+    /* Header logo positioning */
+    .header-logo {
+      position: absolute;
+      top: 20px;
+      right: 20px;
+      z-index: 100;
+    }
+    
+    /* Responsive adjustments */
+    @media (max-width: 500px) {
+      .container {
+        max-width: 100%;
+        border-radius: 16px;
+      }
+      
+      .language-option {
+        padding: 0.7rem 0.9rem;
+      }
+      
+      .header-logo img {
+        height: 100px;
+        width: 107px;
+      }
+    }
+    
+    /* Loading overlay for transition */
+    .loading-overlay {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background-color: rgba(255, 255, 255, 0.9);
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      z-index: 1000;
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity 0.3s ease;
+    }
+    
+    .loading-overlay.active {
+      opacity: 1;
+      pointer-events: all;
+    }
+    
+    .spinner {
+      width: 40px;
+      height: 40px;
+      border: 4px solid rgba(98, 189, 217, 0.3);
+      border-radius: 50%;
+      border-top-color: var(--button-color);
+      animation: spin 1s linear infinite;
+      margin-bottom: 20px;
+    }
+    
+    .loading-text {
+      font-size: 1.1rem;
+      color: var(--text-color);
+      font-weight: 500;
+    }
+    
+    @keyframes spin {
+      to { transform: rotate(360deg); }
+    }
+  </style>
+</head>
+<body>
+  
+
+  
+
+  <div class="container">
+    <div class="header">
+      <h1>Choose Your Language</h1>
+    </div>
+    <form method="POST" action="/start" id="languageForm">
+      <div class="language-list" id="languageList">
+        <div class="language-option" data-code="en-IN">
+          <div class="language-flag">
+            <span class="country-code">GB</span>
+          </div>
+          <span class="language-name">English</span>
+          <span class="language-code">en-IN</span>
+        </div>
+        <div class="language-option" data-code="hi-IN">
+          <div class="language-flag">
+            <span class="country-code">IN</span>
+          </div>
+          <span class="language-name">Hindi</span>
+          <span class="language-code">hi-IN</span>
+        </div>
+        <div class="language-option" data-code="pa-IN">
+          <div class="language-flag">
+            <span class="country-code">IN</span>
+          </div>
+          <span class="language-name">Punjabi</span>
+          <span class="language-code">pa-IN</span>
+        </div>
+        <div class="language-option" data-code="bn-IN">
+          <div class="language-flag">
+            <span class="country-code">IN</span>
+          </div>
+          <span class="language-name">Bengali</span>
+          <span class="language-code">bn-IN</span>
+        </div>
+        <div class="language-option" data-code="gu-IN">
+          <div class="language-flag">
+            <span class="country-code">IN</span>
+          </div>
+          <span class="language-name">Gujarati</span>
+          <span class="language-code">gu-IN</span>
+        </div>
+        <div class="language-option" data-code="kn-IN">
+          <div class="language-flag">
+            <span class="country-code">IN</span>
+          </div>
+          <span class="language-name">Kannada</span>
+          <span class="language-code">kn-IN</span>
+        </div>
+        <div class="language-option" data-code="ml-IN">
+          <div class="language-flag">
+            <span class="country-code">IN</span>
+          </div>
+          <span class="language-name">Malayalam</span>
+          <span class="language-code">ml-IN</span>
+        </div>
+        <div class="language-option" data-code="mr-IN">
+          <div class="language-flag">
+            <span class="country-code">IN</span>
+          </div>
+          <span class="language-name">Marathi</span>
+          <span class="language-code">mr-IN</span>
+        </div>
+        <div class="language-option" data-code="od-IN">
+          <div class="language-flag">
+            <span class="country-code">IN</span>
+          </div>
+          <span class="language-name">Odia</span>
+          <span class="language-code">od-IN</span>
+        </div>
+        <div class="language-option" data-code="ta-IN">
+          <div class="language-flag">
+            <span class="country-code">IN</span>
+          </div>
+          <span class="language-name">Tamil</span>
+          <span class="language-code">ta-IN</span>
+        </div>
+        <div class="language-option" data-code="te-IN">
+          <div class="language-flag">
+            <span class="country-code">IN</span>
+          </div>
+          <span class="language-name">Telugu</span>
+          <span class="language-code">te-IN</span>
+        </div>
+      </div>
+      <input type="hidden" name="language" id="selectedLanguage">
+      <div class="footer">
+        <button type="submit" id="startBtn" disabled>Start Conversation</button>
+      </div>
+    </form>
+  </div>
+
+  <!-- Loading overlay for smooth transition -->
+  <div class="loading-overlay" id="loadingOverlay">
+    <div class="spinner"></div>
+    <div class="loading-text">Preparing conversation...</div>
+  </div>
+
+  <script>
+    const options = document.querySelectorAll('.language-option');
+    const input = document.getElementById('selectedLanguage');
+    const startButton = document.getElementById('startBtn');
+    const form = document.getElementById('languageForm');
+    const loadingOverlay = document.getElementById('loadingOverlay');
+
+    options.forEach(option => {
+      option.addEventListener('click', () => {
+        // Remove selected class from all options
+        options.forEach(o => o.classList.remove('selected'));
+        
+        // Add selected class to clicked option
+        option.classList.add('selected');
+        
+        // Set the hidden input value
+        input.value = option.dataset.code;
+        
+        // Enable the button
+        startButton.disabled = false;
+        
+        // Add subtle animation to the selected option
+        option.style.transform = 'scale(1.03)';
+        setTimeout(() => {
+          option.style.transform = 'translateY(-3px)';
+        }, 200);
+      });
+      
+      // Add aria labels for accessibility
+      const langName = option.querySelector('.language-name').textContent;
+      option.setAttribute('aria-label', `Select ${langName}`);
+      option.setAttribute('role', 'button');
+      option.setAttribute('tabindex', '0');
+      
+      // Support keyboard navigation
+      option.addEventListener('keydown', (e) => {
+        if (e.key === 'Enter' || e.key === ' ') {
+          e.preventDefault();
+          option.click();
+        }
+      });
+    });
+    
+    // Show loading overlay on form submission for a smooth transition
+    form.addEventListener('submit', function(e) {
+      if (input.value) {
+        e.preventDefault();
+        loadingOverlay.classList.add('active');
+        
+        // Small delay to show the loading animation
+        setTimeout(() => {
+          this.submit();
+        }, 800);
+      }
+    });
+  </script>
+</body>
+</html>

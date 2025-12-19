@@ -1,0 +1,225 @@
+{
+  "Departments": [
+    {
+      "Name": "General Medicine",
+      "CommonProblems": [
+        "Fever",
+        "Asthma",
+        "Hypertension",
+        "Diabetes Mellitus",
+        "Liver Diseases",
+        "Heart Diseases (including Chest Pain, Palpitations)",
+        "Malaise and Fatigue",
+        "Respiratory Infections (including Cough, Pneumonia)",
+        "Headaches",
+        "Abdominal Pain"
+      ],
+      "DiagnosticQuestions": {
+        "Fever": [
+          "When did the symptoms first occur?",
+          "What other symptoms are you experiencing? How severe are they?",
+          "Have you been around anyone who's ill?"
+        ],
+        "Asthma": [
+          "Do you have recurrent wheezing, coughing, trouble breathing, or chest tightness?",
+          "Do symptoms occur or worsen at night?",
+          "Are symptoms triggered by cold air, exercise, or exposure to allergens?",
+          "Do you have blood relatives, such as a parent, aunt, grandparent or cousin, with asthma, hay fever or other allergies?"
+        ],
+        "Hypertension": [
+          "Do you have a family history of high cholesterol, high blood pressure or heart disease?",
+          "What are your diet and exercise habits like?",
+          "Do you drink alcohol? How many drinks do you have in a week?",
+          "When did you last have your blood pressure checked? What was the result?"
+        ],
+        "Diabetes Mellitus": [
+          "How long have you known that you have diabetes?",
+          "Do you test your blood sugar levels? When do you test?",
+          "Have you had LOW blood sugars? How often has it occurred?",
+          "Have you had increased thirst, increased urination, and fatigue?"
+        ],
+        "Liver Diseases": [
+          "How bad are your symptoms? Are they constant, or do they come and go?",
+          "Have you ever had your skin or eyes turn yellow?",
+          "How much alcohol do you drink a week?",
+          "Do you have tattoos?"
+        ],
+        "Heart Diseases (including Chest Pain, Palpitations)": [
+          "Have you had any pain or pressure in your chest, neck, or arm?",
+          "What words would you use to describe your pain?",
+          "Have you ever noticed your heart feels as if it is racing or 'fluttering' in your chest? Have you ever felt as if your heart 'skips' a beat?",
+          "When did your symptoms start? Have they gotten worse over time?"
+        ],
+        "Malaise and Fatigue": [
+          "Do you have any other symptoms?",
+          "Do you sleep well? Is your sleep interrupted? Do you snore?",
+          "Has your weight changed?",
+          "Can you remember when this started? Did it start suddenly and can you date it from a particular date, event, holiday or illness? Or did it come on more gradually?"
+        ],
+        "Respiratory Infections (including Cough, Pneumonia)": [
+          "Do you have yellow or green sputum?",
+          "Do you have difficulty breathing, with your shoulders moving up and down?",
+          "Do you experience wheezing or whistling sounds when breathing?",
+          "Is your breathing weaker than usual? Are you breathing faster than usual?"
+        ],
+        "Headaches": [
+          "Since how long have you been having headaches?",
+          "Where in the head does it pain and how does it radiate?",
+          "Is the pain constant or does it come and go?",
+          "Do you have any other symptoms that seem associated with the pain?"
+        ],
+        "Abdominal Pain": [
+          "When did the pain start to occur? Where is the pain?",
+          "Can you describe what the pain feels like? What brings on the pain? What relieves the pain?",
+          "Are there any associated symptoms with the pain such as fever, nausea, vomiting, or change in bowel pattern?",
+          "Are you having bloody stools (hematochezia); dark, tarry stools (melena); abdominal distention; or vomiting of blood (hematemesis)?"
+        ]
+      }
+    },
+    {
+      "Name": "Gastroenterology",
+      "CommonProblems": [
+        "Gastroesophageal Reflux Disease (GERD)",
+        "Dyspepsia",
+        "Irritable Bowel Syndrome (IBS)",
+        "Abdominal Pain",
+        "Nausea",
+        "Vomiting",
+        "Constipation",
+        "Diarrhea"
+      ],
+      "DiagnosticQuestions": {
+        "Abdominal Pain": [
+          "When did the pain start to occur? Where is the pain?",
+          "Can you describe what the pain feels like? What brings on the pain? What relieves the pain?",
+          "Are there any associated symptoms with the pain such as fever, nausea, vomiting, or change in bowel pattern?",
+          "Are you having bloody stools (hematochezia); dark, tarry stools (melena); abdominal distention; or vomiting of blood (hematemesis)?"
+        ],
+        "Nausea/Vomiting/Diarrhea/Constipation": [
+          "Have you had any issues with nausea, vomiting, food intolerance, heartburn, ulcers, change in appetite, or weight?",
+          "When was your last bowel movement? Have there been any changes in pattern or consistency of your stool?",
+          "Are your stools watery or is there some form to them? How many episodes of diarrhea have you had in the past 24 hours?",
+          "Has constipation been a problem for you throughout your life? How frequently do you usually have a bowel movement?"
+        ]
+      }
+    },
+    {
+      "Name": "Neurology",
+      "CommonProblems": [
+        "Headaches and Migraines",
+        "Chronic Neurologic Disorders"
+      ],
+      "DiagnosticQuestions": {
+        "Headaches/Migraines": [
+          "Since how long have you been having headaches?",
+          "Where in the head does it pain and how does it radiate?",
+          "Is the pain constant or does it come and go?",
+          "Do you have any other symptoms that seem associated with the pain?"
+        ]
+      }
+    },
+    {
+      "Name": "Cardiology",
+      "CommonProblems": [
+        "Essential Hypertension",
+        "Hyperlipidemia",
+        "Chest Pain",
+        "Congestive Heart Failure",
+        "Syncope & Presyncope",
+        "Palpitations",
+        "Atrial Fibrillation & Atrial Flutter",
+        "Coronary Artery Disease"
+      ],
+      "DiagnosticQuestions": {
+        "Essential Hypertension": [
+          "Do you have a family history of high cholesterol, high blood pressure or heart disease?",
+          "What are your diet and exercise habits like?",
+          "Do you drink alcohol? How many drinks do you have in a week?",
+          "When did you last have your blood pressure checked? What was the result?"
+        ],
+        "Chest Pain": [
+          "Have you had any pain or pressure in your chest, neck, or arm?",
+          "What words would you use to describe your pain?",
+          "When did your symptoms start? Have they gotten worse over time?",
+          "Does your pain spread to any other parts of your body?"
+        ],
+        "Palpitations": [
+          "Have you ever noticed your heart feels as if it is racing or 'fluttering' in your chest?",
+          "Have you ever felt as if your heart 'skips' a beat?",
+          "Are you currently experiencing palpitations?",
+          "When did palpitations start? Have you previously been treated for palpitations?"
+        ],
+        "Shortness of Breath (Dyspnea)": [
+          "Do you ever feel short of breath with activity? What level of activity elicits shortness of breath?",
+          "Do you ever feel short of breath while sleeping? Have you ever woken up from sleeping feeling suddenly short of breath?",
+          "Do you feel short of breath when lying flat? How many pillows do you need to sleep, or do you sleep in a chair?",
+          "Have you noticed swelling of your feet or ankles? Have you noticed any unexplained, sudden weight gain?"
+        ]
+      }
+    },
+    {
+      "Name": "Nephrology",
+      "CommonProblems": [
+        "Urinary Tract Infection (UTI)",
+        "Edema",
+        "Hypertension",
+        "Diabetes Mellitus"
+      ],
+      "DiagnosticQuestions": {
+        "Urinary Tract Infection (UTI)": [
+          "Do you experience any pain or discomfort with urination (dysuria)? Is the discomfort internal or external?",
+          "Do you experience frequent urination (urinary frequency)? Does the frequency occur during daytime or nighttime hours?",
+          "Do you ever experience a strong urge to urinate that makes it difficult to reach the bathroom in time?",
+          "Does this strong urge ever result in a leakage of urine? Do you have any leakage of urine when you cough, sneeze, or jump?"
+        ],
+        "Edema": [
+          "Have you noticed swelling of your feet or ankles?",
+          "Have you noticed your rings, shoes, or clothing feel tight at the end of the day?",
+          "Has this feeling of swelling or restriction gotten worse?",
+          "Is there anything that makes the swelling better (e.g., sitting with your feet elevated)?"
+        ]
+      }
+    },
+    {
+      "Name": "Pediatrics",
+      "CommonProblems": [
+        "Fever",
+        "Cough",
+        "Asthma",
+        "Bronchitis",
+        "Nausea",
+        "Vomiting",
+        "Constipation",
+        "Diarrhea",
+        "Skin-related conditions",
+        "Febrile Seizures"
+      ],
+      "DiagnosticQuestions": {
+        "Fever (Pediatric)": [
+          "Is your child 3 months old or younger?",
+          "Has the fever lasted more than four days without knowing what's causing it?",
+          "Does your child show signs of dehydration, such as no tears when crying, infrequent urination, or dry mouth?",
+          "Does your child appear very ill or drowsy, or have a stiff neck or rash?"
+        ],
+        "Cough (Pediatric)": [
+          "How bad is the cough today?",
+          "Does he go into coughing spells where he can't stop? How long do they last?",
+          "Is it a barky, croupy cough?",
+          "Describe your child's breathing when he's not coughing."
+        ],
+        "Diarrhea (Pediatric)": [
+          "How often/many times a day does patient have a bowel movement?",
+          "What is the typical pattern? Is consistency liquid, mushy or semi-solid? Larger volume?",
+          "Any blood in bowel movement, toilet, diaper, or after wiping? Mucous or undigested food?",
+          "Any signs or symptoms of dehydration such as dry lips, decreased urinary output, no tears, decreased skin turgor, sunken eyes, less wet diapers?"
+        ],
+        "Skin Rash (Pediatric)": [
+          "When did the rash start? Where did it start and has it spread?",
+          "Is the rash itchy?",
+          "Is there anything that improves it or makes it worse?",
+          "Have your parents or any other family members ever had a similar rash?"
+        ]
+      }
+    }
+  ]
+}

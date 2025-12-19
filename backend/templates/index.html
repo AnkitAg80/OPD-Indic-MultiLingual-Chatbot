@@ -1,0 +1,1230 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Medical OPD Chatbot</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --primary-color: #4dabaa;
+      --secondary-color: #f8f9fa;
+      --accent-color: #5bbad5;
+      --text-color: #3a4859;
+      --light-text: #6c757d;
+      --border-color: #ecf0f5;
+      --shadow-color: rgba(149, 157, 165, 0.1);
+      --button-color: #62bdd9;
+      --circle-size: 200px;
+      --circle-color-outer: rgba(91, 186, 213, 0.2);
+      --circle-color-middle: rgba(91, 186, 213, 0.4);
+      --circle-color-inner: rgba(91, 186, 213, 0.8);
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      font-family: 'Inter', Arial, sans-serif;
+      background: #ffffff;
+      color: var(--text-color);
+      line-height: 1.6;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      padding: 0;
+      margin: 0;
+      position: relative;
+      overflow-x: hidden;
+    }
+
+    .header {
+      width: 100%;
+      padding: 1.5rem;
+      text-align: center;
+      background-color: white;
+      box-shadow: 0 1px 3px var(--shadow-color);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .header h1 {
+      font-weight: 500;
+      font-size: 1.5rem;
+      color: var(--text-color);
+      margin: 0 auto;
+    }
+
+    .language-indicator {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      padding: 6px 12px;
+      background-color: #f0f7fb;
+      border-radius: 20px;
+      font-size: 0.9rem;
+      color: var(--text-color);
+    }
+
+    .language-flag-small {
+      width: 20px;
+      height: 20px;
+      border-radius: 50%;
+      background-color: #f2f2f2;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 0.7rem;
+    }
+
+    .back-button {
+      border: none;
+      background: transparent;
+      color: var(--light-text);
+      cursor: pointer;
+      font-size: 0.9rem;
+      display: flex;
+      align-items: center;
+      padding: 0;
+    }
+
+    .back-button svg {
+      width: 16px;
+      height: 16px;
+      margin-right: 4px;
+    }
+
+    .back-button:hover {
+      color: var(--text-color);
+    }
+
+    .chat-container {
+      width: 30%;
+      max-width: 350px;
+      min-width: 280px;
+      flex-grow: 0;
+      display: none; /* Hide the chat container */
+      flex-direction: column;
+      height: calc(100vh - 150px);
+      background-color: white;
+      box-shadow: 0 2px 10px var(--shadow-color);
+      border-radius: 15px;
+      margin: 1rem;
+      overflow: hidden;
+      animation: fadeIn 0.5s ease-out;
+      position: absolute;
+      left: 20px;
+      top: 90px;
+      z-index: 10;
+    }
+
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateX(-20px); }
+      to { opacity: 1; transform: translateX(0); }
+    }
+
+    .main-content {
+      width: 100%;
+      height: calc(100vh - 70px);
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      position: relative;
+    }
+
+    .chat-messages {
+      flex-grow: 1;
+      padding: 1.5rem;
+      overflow-y: auto;
+      display: flex;
+      flex-direction: column;
+      gap: 1rem;
+      background-color: white;
+    }
+
+    .message {
+      max-width: 80%;
+      padding: 1rem 1.2rem;
+      border-radius: 12px;
+      position: relative;
+      animation: fadeIn 0.3s ease-out;
+    }
+
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(10px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    .bot-message {
+      background-color: white;
+      border: 1px solid #eee;
+      align-self: flex-start;
+      border-bottom-left-radius: 4px;
+      box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
+    }
+
+    .user-message {
+      background-color: #f0f7fb;
+      align-self: flex-end;
+      border-bottom-right-radius: 4px;
+    }
+
+    .message-timestamp {
+      font-size: 0.75rem;
+      color: var(--light-text);
+      margin-top: 0.5rem;
+      display: block;
+    }
+
+    .status-area {
+      text-align: center;
+      padding: 0.8rem;
+      background-color: #fff;
+      border-top: 1px solid var(--border-color);
+    }
+
+    #status {
+      font-weight: 400;
+      font-size: 0.9rem;
+      color: var(--light-text);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 0.5rem;
+    }
+
+    .status-dot {
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      background-color: var(--accent-color);
+      display: none;
+    }
+
+    .status-dot.active {
+      display: inline-block;
+      animation: pulse 1.5s infinite;
+    }
+
+    @keyframes pulse {
+      0% { transform: scale(1); opacity: 1; }
+      50% { transform: scale(1.4); opacity: 0.7; }
+      100% { transform: scale(1); opacity: 1; }
+    }
+
+    .voice-control-area {
+      padding: 1rem;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      background-color: white;
+      border-top: 1px solid var(--border-color);
+    }
+
+    /* Audio Circle Styles */
+    .audio-circle-container {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      width: var(--circle-size);
+      height: var(--circle-size);
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      z-index: 5;
+    }
+
+    .audio-circle {
+      border-radius: 50%;
+      position: absolute;
+      transition: all 0.3s ease-in-out;
+    }
+
+    .audio-circle-outer {
+      width: 100%;
+      height: 100%;
+      background-color: var(--circle-color-outer);
+      opacity: 0.7;
+    }
+
+    .audio-circle-middle {
+      width: 75%;
+      height: 75%;
+      background-color: var(--circle-color-middle);
+      opacity: 0.8;
+    }
+
+    .audio-circle-inner {
+      width: 50%;
+      height: 50%;
+      background-color: var(--circle-color-inner);
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      color: white;
+      font-size: 1.5rem;
+    }
+
+    @keyframes pulse-speaking {
+      0% { transform: scale(1); }
+      50% { transform: scale(1.05); }
+      100% { transform: scale(1); }
+    }
+
+    @keyframes pulse-listening {
+      0% { transform: scale(1); }
+      50% { transform: scale(1.1); }
+      100% { transform: scale(1); }
+    }
+
+    .audio-circle.speaking {
+      animation: pulse-speaking 1.5s infinite ease-in-out;
+    }
+
+    .audio-circle.listening {
+      animation: pulse-listening 1s infinite ease-in-out;
+    }
+
+    .audio-status-text {
+      position: absolute;
+      bottom: -40px;
+      left: 0;
+      right: 0;
+      text-align: center;
+      font-size: 1rem;
+      color: var(--text-color);
+      font-weight: 500;
+    }
+
+    /* Remove old waveform styles as we're using the central circle now */
+    #waveform, .wave-bars {
+      display: none;
+    }
+
+    /* Media queries for responsiveness */
+    @media (max-width: 992px) {
+      :root {
+        --circle-size: 180px;
+      }
+    }
+
+    @media (max-width: 768px) {
+      :root {
+        --circle-size: 150px;
+      }
+
+      .chat-container {
+        width: 40%;
+        min-width: 250px;
+        display: none; /* Ensure it stays hidden on all screen sizes */
+      }
+
+      .audio-circle-container {
+        margin-left: 0; /* Center the audio circle */
+      }
+    }
+
+    @media (max-width: 576px) {
+      :root {
+        --circle-size: 130px;
+      }
+
+      .main-content {
+        flex-direction: column;
+      }
+
+      .chat-container {
+        display: none; /* Ensure it stays hidden */
+      }
+
+      .audio-circle-container {
+        margin: 0;
+        top: 50%; /* Center vertically */
+      }
+
+      .header h1 {
+        font-size: 1.2rem;
+      }
+
+      .language-indicator {
+        padding: 4px 8px;
+        font-size: 0.8rem;
+      }
+
+      .back-button {
+        font-size: 0.8rem;
+      }
+
+      .header-logo img {
+        height: 100px;
+        width: 107px;
+      }
+    }
+
+    /* Fix for small heights */
+    @media (max-height: 700px) {
+      .chat-container {
+        display: none; /* Ensure it stays hidden */
+      }
+
+      .audio-circle-container {
+        top: 50%; /* Center vertically */
+      }
+    }
+
+    .button-container {
+      display: flex;
+      justify-content: center;
+      width: 100%;
+      margin-top: 1rem;
+    }
+
+    button {
+      background-color: var(--button-color);
+      color: white;
+      border: none;
+      border-radius: 30px;
+      padding: 0.8rem 2rem;
+      font-size: 1rem;
+      font-weight: 500;
+      cursor: pointer;
+      transition: background-color 0.2s;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 0.5rem;
+    }
+
+    button:hover {
+      background-color: #58b0ca;
+    }
+
+    button:active {
+      transform: translateY(1px);
+    }
+
+    #pdfBtn {
+      display: none;
+    }
+
+    @media (max-width: 768px) {
+      .chat-container {
+        display: none; /* Ensure it stays hidden */
+      }
+
+      .header {
+        padding: 1rem;
+      }
+
+      .message {
+        max-width: 90%;
+      }
+
+      .audio-circle-container {
+        margin-left: 0; /* Center horizontally */
+      }
+    }
+
+    /* Scrollbar styling */
+    .chat-messages::-webkit-scrollbar {
+      width: 6px;
+    }
+
+    .chat-messages::-webkit-scrollbar-track {
+      background: transparent;
+    }
+
+    .chat-messages::-webkit-scrollbar-thumb {
+      background-color: #ddd;
+      border-radius: 10px;
+    }
+
+    /* Progress bar styles */
+    .progress-container {
+      width: 60%;
+      max-width: 400px;
+      margin: 0 auto;
+      background-color: #f0f0f0;
+      border-radius: 10px;
+      overflow: hidden;
+      height: 12px;
+      box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+      position: absolute;
+      bottom: 80px;
+      left: 50%;
+      transform: translateX(-50%);
+      opacity: 0;
+      transition: opacity 0.3s ease;
+    }
+
+    .progress-bar {
+      height: 100%;
+      background-color: var(--button-color);
+      border-radius: 10px;
+      width: 0%;
+      transition: width 0.5s ease;
+    }
+
+    .progress-text {
+      position: absolute;
+      width: 100%;
+      text-align: center;
+      bottom: 60px;
+      font-size: 0.9rem;
+      color: var(--text-color);
+      opacity: 0;
+      transition: opacity 0.3s ease;
+    }
+
+    /* ARIA support */
+    .sr-only {
+      position: absolute;
+      width: 1px;
+      height: 1px;
+      padding: 0;
+      margin: -1px;
+      overflow: hidden;
+      clip: rect(0, 0, 0, 0);
+      border: 0;
+    }
+
+    /* Header logo positioning */
+    .header-logo {
+      position: absolute;
+      top: 20px;
+      right: 20px;
+      z-index: 100;
+    }
+
+    /* Loading overlay */
+    .loading-overlay {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background-color: rgba(255, 255, 255, 0.9);
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      z-index: 1000;
+    }
+
+    .spinner {
+      width: 40px;
+      height: 40px;
+      border: 4px solid rgba(98, 189, 217, 0.3);
+      border-radius: 50%;
+      border-top-color: var(--button-color);
+      animation: spin 1s linear infinite;
+      margin-bottom: 20px;
+    }
+
+    .loading-text {
+      font-size: 1.1rem;
+      color: var(--text-color);
+      font-weight: 500;
+    }
+
+    @keyframes spin {
+      to { transform: rotate(360deg); }
+    }
+
+    .reset-button {
+    position: absolute;
+    left: 50px;
+    top: 100px;
+    padding: 10px 20px;
+    background-color: #f44336;
+    color: white;
+    border: none;
+    border-radius: 25px;
+    font-size: 1.1rem;
+    font-weight: 600;
+    cursor: pointer;
+    z-index: 999;
+    transition: background-color 0.2s ease;
+  }
+
+  }
+
+  .reset-button:hover {
+    background-color: #d32f2f;
+  }
+
+  </style>
+</head>
+<body>
+  <!-- Loading overlay that will be hidden once the page is ready -->
+  <div class="loading-overlay" id="initialLoadingOverlay">
+    <div class="spinner"></div>
+    <div class="loading-text">Starting conversation...</div>
+  </div>
+
+
+
+  
+  <button class="reset-button" id="resetSession" aria-label="Reset session and start over">
+   Reset
+   </button>
+  <button id="endButton" style="
+    position: absolute;
+    bottom: 70px;
+    right: 300px;
+    background-color: #0095ffff;
+    padding: 10px 20px;
+    border-radius: 20px;
+    color: white;
+    font-size: 20px;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    z-index: 999; /* Add this line */
+  ">
+    End
+  </button>
+
+  <div class="header">
+    <button class="back-button" id="backToLanguage" aria-label="Back to language selection">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+        <path d="M19 12H5M12 19l-7-7 7-7"/>
+      </svg>
+      Change language
+    </button>
+    <h1>🎙️ Medical OPD Chatbot</h1>
+    <div class="language-indicator" id="languageIndicator">
+      <div class="language-flag-small">
+        <span id="countryCode">--</span>
+      </div>
+      <span id="languageName">--</span>
+    </div>
+  </div>
+
+  <div class="main-content">
+    <!-- Interactive Audio Circle -->
+    <div class="audio-circle-container" id="audioCircleContainer">
+      <div class="audio-circle audio-circle-outer" id="circleOuter"></div>
+      <div class="audio-circle audio-circle-middle" id="circleMiddle"></div>
+      <div class="audio-circle audio-circle-inner" id="circleInner">
+        <svg id="audioIcon" width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2">
+          <path d="M12 1a3 3 0 0 0-3 3v8a3 3 0 0 0 6 0V4a3 3 0 0 0-3-3z"></path>
+          <path d="M19 10v2a7 7 0 0 1-14 0v-2"></path>
+        </svg>
+      </div>
+      <div class="audio-status-text" id="audioStatusText">Ready</div>
+    </div>
+
+    <!-- Status message container - visible replacement for chat status -->
+    <div class="status-message-container" style="position: absolute; bottom: 30px; left: 0; right: 0; text-align: center;">
+      <div id="mainStatus" style="font-size: 1.2rem; color: var(--text-color); font-weight: 500;"></div>
+
+      <!-- Progress bar -->
+      <div class="progress-container" id="progressContainer">
+        <div class="progress-bar" id="progressBar"></div>
+      </div>
+      <div class="progress-text" id="progressText">Question 0 of 12</div>
+
+      <div class="button-container" style="margin-top: 20px;">
+        <button id="pdfBtnMain" style="display: none;" aria-label="Download patient report as PDF">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4M7 10l5 5 5-5M12 15V3"/>
+          </svg>
+          Download PDF
+        </button>
+      </div>
+    </div>
+
+    <!-- Compact Chat Container (hidden) -->
+    <div class="chat-container">
+      <div class="chat-messages" id="chatMessages">
+        <!-- Messages will be inserted here dynamically -->
+        <div class="message bot-message" id="welcomeMessage">
+          Welcome to the Medical OPD Chatbot. The consultation will begin automatically.
+          <span class="message-timestamp">Now</span>
+        </div>
+      </div>
+
+      <div class="status-area">
+        <div id="status">
+          <span class="status-dot"></span>
+          <span class="status-text">Initializing...</span>
+        </div>
+      </div>
+
+      <div class="voice-control-area">
+        <div class="button-container">
+          <button id="pdfBtn" aria-label="Download patient report as PDF">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4M7 10l5 5 5-5M12 15V3"/>
+            </svg>
+            Download PDF
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script>
+  const language = "{{ language }}";  // Injects Flask variable into JS
+let languageData = {
+    "en-IN": { name: "English", code: "GB" },
+    "hi-IN": { name: "Hindi", code: "IN" },
+    "bn-IN": { name: "Bengali", code: "IN" },
+    "gu-IN": { name: "Gujarati", code: "IN" },
+    "kn-IN": { name: "Kannada", code: "IN" },
+    "ml-IN": { name: "Malayalam", code: "IN" },
+    "mr-IN": { name: "Marathi", code: "IN" },
+    "od-IN": { name: "Odia", code: "IN" },
+    "pa-IN": { name: "Punjabi", code: "IN" },
+    "ta-IN": { name: "Tamil", code: "IN" },
+    "te-IN": { name: "Telugu", code: "IN" }
+};
+
+  </script>
+
+  <script>
+    const statusText = document.querySelector(".status-text");
+    const statusDot = document.querySelector(".status-dot");
+    const chatMessages = document.getElementById("chatMessages");
+    const pdfBtn = document.getElementById("pdfBtn");
+    const initialLoadingOverlay = document.getElementById("initialLoadingOverlay");
+    const backToLanguageBtn = document.getElementById("backToLanguage");
+    const languageIndicator = document.getElementById("languageIndicator");
+    const countryCode = document.getElementById("countryCode");
+    const languageName = document.getElementById("languageName");
+
+    // Audio circle elements
+    const circleOuter = document.getElementById("circleOuter");
+    const circleMiddle = document.getElementById("circleMiddle");
+    const circleInner = document.getElementById("circleInner");
+    const audioStatusText = document.getElementById("audioStatusText");
+    const audioIcon = document.getElementById("audioIcon");
+
+    let audioChunks = [];
+    let conversationHistory = [];
+
+    // Update language indicator
+    function updateLanguageIndicator() {
+      const currentLang = languageData[language] || { name: "Unknown", code: "??" };
+      countryCode.textContent = currentLang.code;
+      languageName.textContent = currentLang.name;
+    }
+
+    // Format current time for message timestamps
+    function getFormattedTime() {
+      const now = new Date();
+      return now.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+    }
+
+    // Add a new message to the chat
+    function addMessage(text, isBot = true) {
+      const messageDiv = document.createElement("div");
+      messageDiv.className = `message ${isBot ? 'bot-message' : 'user-message'}`;
+
+      // Add message text
+      messageDiv.textContent = text;
+
+      // Add timestamp
+      const timestamp = document.createElement("span");
+      timestamp.className = "message-timestamp";
+      timestamp.textContent = getFormattedTime();
+      messageDiv.appendChild(timestamp);
+
+      // Add to chat and save to history
+      chatMessages.appendChild(messageDiv);
+      conversationHistory.push({ text, isBot, timestamp: new Date() });
+
+      // Scroll to bottom
+      chatMessages.scrollTop = chatMessages.scrollHeight;
+
+      return messageDiv;
+    }
+
+    // Update status with visual indicator
+    function updateStatus(status, isActive = false) {
+      statusText.textContent = status;
+      statusDot.className = isActive ? "status-dot active" : "status-dot";
+
+      // Also update the main visible status
+      const mainStatus = document.getElementById("mainStatus");
+      if (mainStatus) {
+        mainStatus.textContent = status;
+      }
+    }
+
+    // Helper function to safely access DOM elements
+    function safeGetElement(id) {
+      const element = document.getElementById(id);
+      if (!element) {
+        console.warn(`Element with id ${id} not found`);
+      }
+      return element;
+    }
+
+    // Update progress bar function
+    function updateProgressBar(current, total) {
+      const progressContainer = safeGetElement('progressContainer');
+      const progressBar = safeGetElement('progressBar');
+      const progressText = safeGetElement('progressText');
+
+      if (!progressContainer || !progressBar || !progressText) return;
+
+      // Calculate progress percentage
+      const percentage = Math.min(100, (current / total) * 100);
+
+      // Show progress bar for all questions including welcome message
+      if (current <= total) {
+        progressContainer.style.opacity = '1';
+        progressText.style.opacity = '1';
+        progressBar.style.width = `${percentage}%`;
+        progressText.textContent = `Question ${current} of ${total}`;
+      } else {
+        // Hide progress bar after all questions are done
+        progressContainer.style.opacity = '0';
+        progressText.style.opacity = '0';
+      }
+    }
+
+    // Animate the audio circle based on state and volume
+    function animateAudioCircle(state, volume = 0) {
+      // Reset all classes first
+      circleOuter.classList.remove('speaking', 'listening');
+      circleMiddle.classList.remove('speaking', 'listening');
+      circleInner.classList.remove('speaking', 'listening');
+
+      if (state === 'idle') {
+        audioStatusText.textContent = "Ready";
+        return;
+      }
+
+      if (state === 'listening') {
+        // Set the circle to pulse in listening mode
+        circleOuter.classList.add('listening');
+        circleMiddle.classList.add('listening');
+        circleInner.classList.add('listening');
+        audioStatusText.textContent = "Please speak now...";
+        // Adjust intensity based on volume
+        if (volume > 10) {
+          const scale = 1 + Math.min(0.2, volume * 0.002);
+          circleMiddle.style.transform = `scale(${scale})`;
+          circleInner.style.transform = `scale(${1 + scale * 0.1})`;
+        } else {
+          circleMiddle.style.transform = '';
+          circleInner.style.transform = '';
+        }
+
+        return;
+      }
+
+      if (state === 'speaking') {
+        // Set the circle to pulse in speaking mode
+        circleOuter.classList.add('speaking');
+        circleMiddle.classList.add('speaking');
+        circleInner.classList.add('speaking');
+        audioStatusText.textContent = "Speaking...";
+        return;
+      }
+    }
+
+    // Setup back to language selection button
+    backToLanguageBtn.addEventListener('click', () => {
+      window.location.href = '/change-language'; // Use our dedicated route to reset language selection
+    });
+
+    // Automatically start the conversation when the page loads
+    window.addEventListener('DOMContentLoaded', () => {
+      // Update the language indicator
+      updateLanguageIndicator();
+
+      // Initialize progress bar for welcome message
+      updateProgressBar(1, 13);
+
+      // Hide loading overlay after a brief delay
+      setTimeout(() => {
+        initialLoadingOverlay.style.opacity = '0';
+        setTimeout(() => {
+          initialLoadingOverlay.style.display = 'none';
+        }, 500);
+
+        document.getElementById("welcomeMessage").remove();
+        playLlamaQuestionAndStartRecording();
+      }, 1200);
+    });
+
+    async function playLlamaQuestionAndStartRecording() {
+      try {
+        updateStatus("Getting response...", true);
+        animateAudioCircle('idle');
+
+        const ttsResponse = await fetch('http://localhost:5001/generate-audio', {
+          method: 'POST',
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ text: " ", lang: language })
+        });
+
+        const data = await ttsResponse.json();
+
+        if (data.llama_text) {
+          // Show typing indicator first
+          const typingIndicator = addMessage("...", true);
+
+          // Simulate typing effect
+          setTimeout(() => {
+            typingIndicator.textContent = data.llama_text;
+            const timestamp = document.createElement("span");
+            timestamp.className = "message-timestamp";
+            timestamp.textContent = getFormattedTime();
+            typingIndicator.appendChild(timestamp);
+          }, 500);
+        }
+
+        // Update progress bar if question information is available
+        if (data.current_question !== undefined && data.total_questions !== undefined) {
+          updateProgressBar(data.current_question, data.total_questions);
+        }
+
+        if (data.show_pdf) {
+          // Show both PDF buttons (hidden one and visible one)
+          pdfBtn.style.display = "flex";
+          const pdfBtnMain = document.getElementById("pdfBtnMain");
+          if (pdfBtnMain) {
+            pdfBtnMain.style.display = "flex";
+            pdfBtnMain.onclick = () => {
+              const link = document.createElement("a");
+              link.href = "/static/reports/patient_report.pdf";
+              link.download = "patient_report.pdf";
+              link.click();
+            };
+          }
+
+          pdfBtn.onclick = () => {
+            const link = document.createElement("a");
+            link.href = "/static/reports/patient_report.pdf";
+            link.download = "patient_report.pdf";
+            link.click();
+          };
+        }
+        else {
+          console.log(data.llama_text);
+          console.log("No PDF available for this conversation.");
+        }
+        updateStatus("Speaking...", true);
+        animateAudioCircle('speaking');
+
+        const audioUrl = `http://localhost:5001/audio/${data.audio_file}?t=${Date.now()}`;
+        console.log("Playing audio from URL:", audioUrl);
+
+        // Create audio element and add to DOM for better browser support
+        const audio = new Audio();
+        audio.src = audioUrl;
+        audio.crossOrigin = "anonymous";
+
+        // Add error handling
+        audio.onerror = (err) => {
+          console.error("Audio error:", err);
+          updateStatus("Error playing audio", false);
+          setTimeout(() => startAutoRecording(), 1000);
+        };
+
+        // Play audio with catch for user interaction requirements
+        const playPromise = audio.play();
+        if (playPromise !== undefined) {
+          playPromise.catch(err => {
+            console.error("Playback error:", err);
+            // If autoplay was prevented, show a message
+            updateStatus("Click to start conversation", false);
+            document.body.addEventListener('click', function bodyClick() {
+              audio.play();
+              this.removeEventListener('click', bodyClick);
+              updateStatus("Speaking...", true);
+              animateAudioCircle('speaking');
+            }, { once: true });
+          });
+        }
+
+        // We don't need an interval for the circle animation
+        // as it uses CSS animations
+
+        audio.onended = () => {
+          console.log("Audio playback ended, starting recording");
+          startAutoRecording();
+        };
+      } catch (err) {
+        console.error("Error playing response:", err);
+        updateStatus("Error getting response", false);
+      }
+    }
+
+    async function startAutoRecording() {
+      try {
+        console.log("Starting audio recording...");
+
+        // Check if browser supports getUserMedia
+        if (!navigator.mediaDevices || !navigator.mediaDevices.getUserMedia) {
+          throw new Error("Your browser doesn't support audio recording. Please use Chrome, Firefox, or Edge.");
+        }
+
+        // Use noise suppression and echo cancellation for better quality in noisy environments
+        const stream = await navigator.mediaDevices.getUserMedia({
+          audio: {
+            noiseSuppression: true,
+            echoCancellation: true,
+            autoGainControl: true,
+            sampleRate: 44100,
+            channelCount: 1
+          }
+        });
+
+        console.log("Microphone access granted");
+
+        const context = new AudioContext();
+        const source = context.createMediaStreamSource(stream);
+        const analyser = context.createAnalyser();
+        analyser.fftSize = 1024; // Larger size for better frequency analysis
+        source.connect(analyser);
+
+        const data = new Uint8Array(analyser.frequencyBinCount);
+
+        // Determine the best audio format to use - prefer WAV for compatibility
+        let mimeType = 'audio/wav';
+
+        // Fall back to other formats if not supported
+        if (!MediaRecorder.isTypeSupported(mimeType)) {
+          if (MediaRecorder.isTypeSupported('audio/webm')) {
+            mimeType = 'audio/webm';
+          } else if (MediaRecorder.isTypeSupported('audio/mp4')) {
+            mimeType = 'audio/mp4';
+          } else {
+            mimeType = ''; // Use browser default
+          }
+        }
+
+        console.log(`Using audio format: ${mimeType || 'browser default'}`);
+
+        // Configure for higher quality audio recording
+        const mediaRecorder = new MediaRecorder(stream, {
+          mimeType: mimeType || undefined,
+          audioBitsPerSecond: 128000  // More compatible bitrate
+        });
+
+        audioChunks = [];
+
+        mediaRecorder.ondataavailable = e => {
+          if (e.data && e.data.size > 0) {
+            audioChunks.push(e.data);
+            console.log(`Received audio chunk: ${e.data.size} bytes`);
+          }
+        };
+
+        mediaRecorder.onstop = async () => {
+          updateStatus("Processing your response...", true);
+          animateAudioCircle('idle');
+
+          // Check if we have actual audio data
+          if (audioChunks.length === 0 || audioChunks.every(chunk => chunk.size < 100)) {
+            console.warn("Empty audio recording detected");
+            updateStatus("No speech detected, trying again...", false);
+            setTimeout(() => startAutoRecording(), 1000);
+            return;
+          }
+
+          const totalBytes = audioChunks.reduce((size, chunk) => size + chunk.size, 0);
+          console.log(`Recording complete: ${audioChunks.length} chunks, total size: ${totalBytes} bytes`);
+
+          // Use the correct MIME type for the blob
+          const blobMimeType = mimeType || 'audio/wav';
+          const blob = new Blob(audioChunks, { type: blobMimeType });
+
+          // Add timestamp to prevent caching issues
+          const timestamp = new Date().getTime();
+
+          // Create form data for upload
+          const formData = new FormData();
+          formData.append('file', blob, `recording_${timestamp}.wav`);
+          formData.append('timestamp', timestamp.toString());
+          formData.append('language', language); // Add the language code
+
+          try {
+            const response = await fetch('http://localhost:5001/transcribe', {
+              method: 'POST',
+              body: formData
+            });
+
+            // Check if response is ok before proceeding
+            if (!response.ok) {
+              const errorText = await response.text();
+              throw new Error(`Server responded with ${response.status}: ${errorText}`);
+            }
+
+            const result = await response.json();
+            const transcript = result.transcript;
+            const errorMsg = result.error;
+
+            // Handle error message from server if present
+            if (errorMsg) {
+              console.error(`Server error: ${errorMsg}`);
+              updateStatus(`Server error: ${errorMsg}`, false);
+              setTimeout(() => startAutoRecording(), 2000);
+              return;
+            }
+
+            // Add user message to chat if we have a transcript
+            if (transcript && transcript.trim()) {
+              addMessage(transcript, false);
+              updateStatus("Processing your response...", true);
+              setTimeout(() => playLlamaQuestionAndStartRecording(), 1000);
+            } else {
+              console.warn("Empty transcript returned from server");
+              updateStatus("Could not understand audio, please try again", false);
+              setTimeout(() => startAutoRecording(), 2000);
+              return;
+            }
+          } catch (err) {
+            console.error("Transcribe error:", err);
+            updateStatus("Error processing audio, trying again...", false);
+            setTimeout(() => startAutoRecording(), 2000);
+          }
+        };
+
+        let isRecording = false;
+        let silenceCounter = 0;
+        let minRecordingTime = 750; // 2.5 seconds minimum for better capture
+        let recordingStartTime = 0;
+        let hasDetectedSound = false;
+        let volumeThreshold = 2; // Lower threshold to detect even softer speech
+        let silenceThreshold = 150; // Allow more silence for people who speak slowly
+        let maxSilenceTime = 2000; // Maximum silence duration in ms
+
+        // Start recording immediately - don't wait for sound
+        mediaRecorder.start(100);
+        isRecording = true;
+        recordingStartTime = Date.now();
+        console.log("Recording started immediately");
+        updateStatus("Listening your problem...", true);
+
+        const detect = () => {
+          analyser.getByteFrequencyData(data);
+
+          // Calculate volume from a broader frequency range
+          const volume = data.reduce((a, b) => a + b, 0) / data.length;
+
+          // Debug for audio levels
+          if (volume > 1) {
+            console.log(`Current audio level: ${volume}`);
+          }
+
+          // Animate wave based on volume
+          animateAudioCircle('listening', volume);
+
+          if (volume > volumeThreshold) {
+            hasDetectedSound = true;
+            silenceCounter = 0;
+            if (!isRecording) {
+              isRecording = true;
+              mediaRecorder.start(100);
+              recordingStartTime = Date.now();
+              updateStatus("Recording...", true);
+              console.log("Recording started after detecting sound");
+            }
+          } else if (isRecording) {
+            silenceCounter++;
+
+            // Calculate elapsed recording time and silence time
+            const recordingTime = Date.now() - recordingStartTime;
+            const silenceTime = silenceCounter * (1000/60); // Approximate silence time in ms
+
+            // Always record for minimum time even without detecting sound
+            if (recordingTime >= 10000) {
+              console.log(`Recording automatically stopped after 10 seconds`);
+              if (mediaRecorder.state === "recording") {
+                mediaRecorder.stop();
+              }
+              stream.getTracks().forEach(track => track.stop());
+              isRecording = false;
+              return;
+            }
+
+            // Stop if:
+            // 1. We've recorded at least the minimum time AND
+            // 2. We've detected sound during the recording AND
+            // 3. We've had enough silence frames
+            if (recordingTime >= minRecordingTime && hasDetectedSound && silenceTime > maxSilenceTime) {
+              console.log(`Recording stopped after ${recordingTime}ms with ${silenceTime}ms of silence`);
+              if (mediaRecorder.state === "recording") {
+                mediaRecorder.stop();
+              }
+              stream.getTracks().forEach(track => track.stop());
+              isRecording = false;
+              return;
+            }
+          }
+
+          requestAnimationFrame(detect);
+        };
+
+        // Start the detection loop
+        detect();
+
+        // Safety timeout - if recording goes too long (20 seconds), stop it
+        setTimeout(() => {
+          if (isRecording && mediaRecorder.state === "recording") {
+            console.log("Safety timeout reached, stopping recording");
+            mediaRecorder.stop();
+            stream.getTracks().forEach(track => track.stop());
+            isRecording = false;
+          }
+        }, 20000);
+
+      } catch (err) {
+        console.error("Microphone access error:", err);
+        updateStatus("Microphone access error. Please check your microphone permissions.", false);
+
+        // Try again after a delay
+        setTimeout(() => playLlamaQuestionAndStartRecording(), 3000);
+      }
+    }
+
+    const resetButton = document.getElementById("resetSession");
+    resetButton.addEventListener("click", async () => {
+      if (confirm("Are you sure you want to reset the session?")) {
+        try {
+          await fetch('/reset-session', { method: 'POST' });
+          window.location.href = "/";
+        } catch (err) {
+          alert("Reset failed. Please try again.");
+          console.error(err);
+        }
+      }
+    });
+    document.getElementById("endButton").addEventListener("click", async () => {
+    if (confirm("Are you sure you want to end the session and generate the report now?")) {
+      try {
+        const response = await fetch('http://localhost:5001/end-session', { method: 'POST' });
+        const result = await response.json();
+
+        if (result.success) {
+          alert("Report generated. Click the PDF button to download.");
+          document.getElementById("pdfBtn").style.display = "flex";
+          const pdfBtnMain = document.getElementById("pdfBtnMain");
+          if (pdfBtnMain) {
+            pdfBtnMain.style.display = "flex";
+          }
+        } else {
+          alert("Failed to generate report.");
+        }
+      } catch (error) {
+        console.error("Error ending session:", error);
+        alert("Error ending session.");
+      }
+    }
+    });
+  </script>
+</body>
+</html>
