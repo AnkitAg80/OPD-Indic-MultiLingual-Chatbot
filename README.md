@@ -76,8 +76,8 @@ OPD_final_sarvam/
 
 1. **Clone the Repository**
 ```bash
-git clone https://github.com/yourusername/OPD_final_sarvam.git
-cd OPD_final_sarvam
+https://github.com/AnkitAg80/OPD-Indic-MultiLingual-Chatbot.git
+cd OPD-Indic-MultiLingual-Chatbot
 ```
 
 2. **Create a Virtual Environment** (Recommended)
@@ -231,5 +231,6 @@ All reports are saved in the [static/reports/](static/reports/) directory.
 
 - **Response Time**: ~2-3 seconds per API call (depending on API latency)
 - **Report Generation**: ~1-2 seconds per PDF generation
+
 
 ---
